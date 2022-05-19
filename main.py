@@ -6,31 +6,53 @@ import pandas as pd
 
 
 def vis(C):
-    Z = C
     fig = plt.figure()
     ax1 = fig.add_subplot(131)
     ax1.set_xlabel('Столбец')
     ax1.set_ylabel('Строка')
-    kku = ax1.imshow(Z)
+    kku = ax1.imshow(C)
     fig.colorbar(kku, ax=ax1)
 
     ax2 = fig.add_subplot(132, projection='3d')
     X, Y = np.meshgrid(np.linspace(1, len(C), len(C)), np.linspace(1, len(C), len(C)))
-    ax2.plot_surface(X, Y, Z, cmap=plt.cm.YlGnBu_r)
-    ax2.set_zlim(min([min(i) for i in Z]), max([max(i) for i in Z]))
+    ax2.plot_surface(X, Y, C, cmap=plt.cm.YlGnBu_r)
+    ax2.set_zlim(min([min(i) for i in C]), max([max(i) for i in C]))
     ax2.set_xlabel('Столбец')
     ax2.set_ylabel('Строка')
     ax2.set_zlabel('Значение')
 
     ax3 = fig.add_subplot(133)
-    kkh = sns.ecdfplot(data=pd.DataFrame(np.transpose(C)), palette=f"ch:rot=-.25,hue=1,light=.75", ax=ax3)
-    kkh.set_title('Градация значений по строкам')
+    ax3.scatter(C[0:], C[::-1], alpha=0.5)
+    ax3.grid(True)
 
     ax1.set_title('Тепловая карта')
     ax2.set_title('Объёмная тепловая карта')
+    ax3.set_title('Разброс значений')
+    fig.suptitle('Matplotlib')
 
     fig.set_figwidth(14)
     fig.set_figheight(5)
+    plt.subplots_adjust(wspace=0.4)
+    plt.show()
+
+    fig2 = plt.figure()
+    ax = fig2.add_subplot(131)
+    kkh = sns.ecdfplot(data=pd.DataFrame(np.transpose(C)), palette=f"ch:rot=-.25,hue=1,light=.75", ax=ax)
+
+    ax2 = fig2.add_subplot(132)
+    sns.set_theme(style="ticks")
+    sns.despine(fig2)
+    kku = sns.histplot(C, palette="light:m_r", edgecolor=".3", linewidth=.5, ax=ax2)
+
+    ax3=fig2.add_subplot(133)
+    kkd = sns.lineplot(data=np.transpose(C), palette="pastel", linewidth=2.5, ax=ax3)
+
+    fig2.suptitle('Seaborn')
+    kkh.set_title('Градация значений по строкам')
+    kku.set_title('Количество значений в диапазонах\nпо строкам')
+    kkd.set_title('График значений по строкам')
+    fig2.set_figwidth(15)
+    fig2.set_figheight(6)
     plt.subplots_adjust(wspace=0.4)
     plt.show()
 
